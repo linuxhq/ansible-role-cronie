@@ -1,0 +1,5 @@
+{% for job in item.jobs %}
+{%   if job.interval and job.owner and job.job %}
+{{ job.interval }} {{ job.owner }} {{ job.job }}
+{%   endif %}
+{% endfor %}

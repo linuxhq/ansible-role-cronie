@@ -1,0 +1,16 @@
+---
+dependencies: []
+galaxy_info:
+  author: tkimball83
+  description: RHEL/CentOS - UNIX daemon crond (cronie)
+  license: BSD
+  min_ansible_version: 2.0
+  platforms:
+    - name: EL
+      versions: 
+        - 6
+        - 7
+  galaxy_tags:
+    - cronie
+    - crontab
+    - system

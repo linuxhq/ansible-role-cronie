@@ -1,0 +1,5 @@
+---
+- name: restart crond
+  tags: cronie
+  service: name=crond
+           state=restarted
