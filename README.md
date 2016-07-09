@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/linuxhq/ansible-role-cronie.svg?branch=master)](https://travis-ci.org/linuxhq/ansible-role-cronie)
 
-This role installs and enables cronie on RHEL/CentOS.
+RHEL/CentOS - UNIX daemon crond (cronie)
 
 ## Requirements
 
