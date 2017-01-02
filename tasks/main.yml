@@ -16,9 +16,9 @@
                 mode={{ item.mode }}
       notify: restart crond
       with_items:
-        - { src: 0hourly.j2, dst: /etc/cron.d/0hourly, mode: 0644 }
-        - { src: cron.deny.j2, dst: /etc/cron.deny, mode: 0644 }
-        - { src: crond.sysconfig.j2, dst: /etc/sysconfig/crond, mode: 0600 }
+        - { src: 0hourly.j2, dst: /etc/cron.d/0hourly, mode: '0644' }
+        - { src: cron.deny.j2, dst: /etc/cron.deny, mode: '0644' }
+        - { src: crond.sysconfig.j2, dst: /etc/sysconfig/crond, mode: '0600' }
     - name: Configure cronie jobs
       template: src=cronie.j2
                 dest={{ item.dest }}
