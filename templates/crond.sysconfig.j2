@@ -1,7 +1,3 @@
 # Settings for the CRON daemon.
 # CRONDARGS= :  any extra command-line startup arguments for crond
-{% if cronie_sysconfig_args is defined %}
-CRONDARGS={{ cronie_sysconfig_args }}
-{% else %}
-CRONDARGS=
-{% endif %}
+CRONDARGS={{ cronie_sysconfig_args if cronie_sysconfig_args is defined else '' }}

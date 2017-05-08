@@ -1,20 +1,6 @@
 # Run the hourly jobs
-{% if cronie_hourly_shell is defined %}
-SHELL={{ cronie_hourly_shell }}
-{% else %}
-SHELL=/bin/bash
-{% endif %}
-{% if cronie_hourly_path is defined %}
-PATH={{ cronie_hourly_path|join(':') }}
-{% else %}
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-{% endif %}
-{% if cronie_hourly_mailto is defined %}
-MAILTO={{ cronie_hourly_mailto }}
-{% else %}
-MAILTO=root
-{% endif %}
-{% if cronie_hourly_home is defined %}
-HOME={{ cronie_hourly_home }}
-{% endif %}
+SHELL={{ cronie_hourly_shell if cronie_hourly_shell is defined else '/bin/bash' }}
+PATH={{ cronie_hourly_path|join(':') if cronie_hourly_path is defined else '/sbin:/bin:/usr/sbin:/usr/bin' }}
+MAILTO={{ cronie_hourly_mailto if cronie_hourly_mailto is defined else 'root' }}
+HOME={{ cronie_hourly_home if cronie_hourly_home is defined else '/' }}
 01 * * * * root run-parts /etc/cron.hourly

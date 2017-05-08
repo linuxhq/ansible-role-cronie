@@ -12,10 +12,14 @@ None
 
 Available variables are listed below, along with default values:
 
-    cronie_deny: []
     cronie_hourly_mailto: root
     cronie_hourly_path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]
     cronie_hourly_shell: /bin/bash
+
+Additional variables not defined by default:
+
+    cronie_allow: []
+    cronie_deny: []
     cronie_jobs: ''
     cronie_sysconfig_args: ''
 
@@ -40,7 +44,7 @@ None
           cronie_deny:
             - tkimball
           cronie_jobs:
-            - dest: /etc/cron.d/pwck
+            - dest: /etc/cron.d/linuxhq
               jobs:
                 - interval: '@hourly'
                   owner: root
