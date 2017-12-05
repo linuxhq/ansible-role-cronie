@@ -12,25 +12,32 @@ None
 
 Available variables are listed below, along with default values:
 
-    cronie_hourly_mailto: root
-    cronie_hourly_path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]
-    cronie_hourly_shell: /bin/bash
-
-Additional variables not defined by default:
-
     cronie_allow: []
     cronie_deny: []
-    cronie_jobs: ''
+    cronie_hourly_mailto: root
+    cronie_hourly_path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]
+      - /sbin
+      - /bin
+      - /usr/sbin
+      - /usr/bin
+    cronie_hourly_shell: /bin/bash
+    cronie_jobs: {}
     cronie_sysconfig_args: ''
 
-You can define cron jobs using the following variable:
+Below is example syntax of how to configure cronie jobs:
 
     cronie_jobs:
-      - dest: /etc/cron.d/ansible
+      - cron_file: linuxhq
         jobs:
-          - interval: '* * * * *'
-            owner: root
+          - name: Echo cronie to /dev/null every minute
+            day: '*'
+            hour: "*"
             job: 'echo cronie >/dev/null'
+            minute: '*'
+            month: '*'
+            state: present
+            user: root
+            weekyday '*'
 
 ## Dependencies
 
@@ -41,18 +48,21 @@ None
     - hosts: servers
       roles:
         - role: linuxhq.cronie
-          cronie_deny:
+          cronie_allow:
             - tkimball
           cronie_jobs:
-            - dest: /etc/cron.d/linuxhq
+            - cron_file: linuxhq
               jobs:
-                - interval: '@hourly'
-                  owner: root
-                  job: '/usr/sbin/pwck -s'
+                - name: Sort entries in /etc/group and /etc/gshadow by GID
+                  job: '/usr/bin/sleep $[RANDOM\%3600] && /usr/sbin/grpck -s'
+                  special_time: hourly
+                - name: Sort entries in /etc/passwd and /etc/shadow by UID
+                  job: '/usr/bin/sleep $[RANDOM\%3600] && /usr/sbin/pwck -s'
+                  special_time: hourly
 
 ## License
 
-BSD
+GPLv3
 
 ## Author Information
 
