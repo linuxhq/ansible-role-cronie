@@ -1,7 +1,6 @@
 ---
 cronie_allow: []
 cronie_deny: []
-cronie_environment: []
 cronie_hourly_home: /
 cronie_hourly_mailto: root
 cronie_hourly_path:
@@ -10,6 +9,7 @@ cronie_hourly_path:
   - /usr/sbin
   - /usr/bin
 cronie_hourly_shell: /bin/bash
-cronie_jobs: []
 cronie_sysconfig_args: ''
+cronie_system: []
+cronie_user: []
 ...
