@@ -14,6 +14,7 @@ Available variables are listed below, along with default values:
 
     cronie_allow: []
     cronie_deny: []
+    cronie_environment: []
     cronie_hourly_home: /
     cronie_hourly_mailto: root
     cronie_hourly_path:
@@ -22,13 +23,16 @@ Available variables are listed below, along with default values:
       - /usr/sbin
       - /usr/bin
     cronie_hourly_shell: /bin/bash
-    cronie_jobs: {}
+    cronie_jobs: []
     cronie_sysconfig_args: ''
 
 Below is example syntax of how to configure cronie jobs:
 
     cronie_jobs:
       - cron_file: linuxhq
+        owner: root
+        group: root
+        mode: '0600'
         jobs:
           - name: Echo cronie to /dev/null every minute
             day: '*'
@@ -53,6 +57,7 @@ None
             - tkimball
           cronie_jobs:
             - cron_file: linuxhq
+              mode: '0600'
               jobs:
                 - name: Sort entries in /etc/group and /etc/gshadow by GID
                   job: '/usr/bin/sleep $[RANDOM\%3600] && /usr/sbin/grpck -s'
