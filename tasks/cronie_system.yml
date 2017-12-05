@@ -1,0 +1,52 @@
+---
+- name: Applying system cronjob environment variables
+  cron:
+    cron_file: "{{ item.0.cron_file }}"
+    env: yes
+    insertafter: "{{ item.1.insertafter|default(omit) }}"
+    insertbefore: "{{ item.1.insertbefore|default(omit) }}"
+    name: "{{ item.1.name|upper }}"
+    user: "{{ item.1.user|default('root') }}"
+    value: "{{ item.1.value }}"
+  notify: restart crond
+  with_subelements:
+    - "{{ cronie_system }}"
+    - environment
+  when:
+    - item.0.cron_file is defined
+    - item.1.name is defined
+    - item.1.value is defined
+
+- name: Applying system cronjob commands
+  cron:
+    cron_file: "{{ item.0.cron_file }}"
+    day: "{{ item.1.day|default(omit) }}"
+    disabled: "{{ item.1.disabled|default(omit) }}"
+    env: no
+    hour: "{{ item.1.hour|default(omit) }}"
+    job: "{{ item.1.job }}"
+    minute: "{{ item.1.minute|default(omit) }}"
+    month: "{{ item.1.month|default(omit) }}"
+    name: "{{ item.1.name }}"
+    special_time: "{{ item.1.special_time|default(omit) }}"
+    state: "{{ item.1.state|default(omit) }}"
+    user: "{{ item.1.user|default('root') }}"
+    weekday: "{{ item.1.weekday|default(omit) }}"
+  notify: restart crond
+  with_subelements:
+    - "{{ cronie_system }}"
+    - commands
+  when:
+    - item.0.cron_file is defined
+    - item.1.job is defined
+    - item.1.name is defined
+
+- name: Applying permissions to system crontab files
+  file:
+    path: "/etc/cron.d/{{ item.cron_file }}"
+    owner: "{{ item.owner|default('root') }}"
+    group: "{{ item.group|default('root') }}"
+    mode: "{{ item.mode|default(0644) }}"
+  with_items: "{{ cronie_system }}"
+  when: item.cron_file is defined
+...

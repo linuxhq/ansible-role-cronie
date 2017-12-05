@@ -14,7 +14,6 @@ Available variables are listed below, along with default values:
 
     cronie_allow: []
     cronie_deny: []
-    cronie_environment: []
     cronie_hourly_home: /
     cronie_hourly_mailto: root
     cronie_hourly_path:
@@ -23,26 +22,30 @@ Available variables are listed below, along with default values:
       - /usr/sbin
       - /usr/bin
     cronie_hourly_shell: /bin/bash
-    cronie_jobs: []
     cronie_sysconfig_args: ''
+    cronie_system: []
+    cronie_user: []
 
-Below is example syntax of how to configure cronie jobs:
+Example syntax for setting system and user environments and cronjobs:
 
-    cronie_jobs:
+    cronie_system:
       - cron_file: linuxhq
-        owner: root
-        group: root
-        mode: '0600'
-        jobs:
-          - name: Echo cronie to /dev/null every minute
-            day: '*'
-            hour: "*"
-            job: 'echo cronie >/dev/null'
-            minute: '*'
-            month: '*'
-            state: present
-            user: root
-            weekyday '*'
+        environment:
+          - name: path
+            value: /bin:/usr/bin
+        commands:
+          - name: Lets echo 0 to /dev/null on boot
+            job: 'echo 0 > /dev/null'
+            special_time: reboot
+
+    cronie_user:
+      - user: tkimball
+        environment:
+          - name: path
+            value: /bin:/usr/bin
+        commands:
+          - name: Lets echo 1 to /dev/null every minute
+            job: 'echo 0 > /dev/null'
 
 ## Dependencies
 
@@ -55,15 +58,30 @@ None
         - role: linuxhq.cronie
           cronie_allow:
             - tkimball
-          cronie_jobs:
+          cronie_system:
             - cron_file: linuxhq
               mode: '0600'
-              jobs:
+              environment:
+                - name: path
+                  value: /bin:/usr/bin
+              commands:
+                - name: Disable module loading after boot time
+                  job: 'echo 1 > /proc/sys/kernel/modules_disabled'
+                  special_time: reboot
+                - name: Hide process information for other users
+                  job: 'mount -o remount,hidepid=2,gid=0 /proc'
+                  special_time: reboot
+                - name: Purge RPM artifacts with rpmnew extension
+                  job: 'sleep $[RANDOM\%3600] && find / -type f -name *.rpmnew -exec /bin/rm {} \; 2>/dev/null'
+                  special_time: hourly
+                - name: Purge RPM artifacts with rpmsave extension
+                  job: 'sleep $[RANDOM\%3600] && find / -type f -name *.rpmsave -exec /bin/rm {} \; 2>/dev/null'
+                  special_time: hourly
                 - name: Sort entries in /etc/group and /etc/gshadow by GID
-                  job: '/usr/bin/sleep $[RANDOM\%3600] && /usr/sbin/grpck -s'
+                  job: 'sleep $[RANDOM\%3600] && grpck -s'
                   special_time: hourly
                 - name: Sort entries in /etc/passwd and /etc/shadow by UID
-                  job: '/usr/bin/sleep $[RANDOM\%3600] && /usr/sbin/pwck -s'
+                  job: 'sleep $[RANDOM\%3600] && pwck -s'
                   special_time: hourly
 
 ## License

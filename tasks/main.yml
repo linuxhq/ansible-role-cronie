@@ -8,94 +8,22 @@
   register: cronie_yum
 
 - block:
-    - name: Applying cronie hourly and sysconfig configurations
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dst }}"
-        owner: root
-        group: root
-        mode: "{{ item.mode }}"
-      notify: restart crond
-      with_items:
-        - { src: 0hourly.j2, dst: /etc/cron.d/0hourly, mode: '0644' }
-        - { src: crond.sysconfig.j2, dst: /etc/sysconfig/crond, mode: '0600' }
+    - name: Executing tasks via cronie task list (etc)
+      import_tasks: cronie_etc.yml
 
-    - name: Applying cron.allow configuration (if applicable)
-      template:
-        src: cron.allow.j2
-        dest: /etc/cron.allow
-        owner: root
-        group: root
-        mode: 0600
-      notify: restart crond
+    - name: Executing tasks via cronie task list (system)
+      import_tasks: cronie_system.yml
       when:
-        - cronie_allow is defined
-        - cronie_allow|length > 0
+        - cronie_system is defined
+        - cronie_system|length > 0
 
-    - name: Applying cron.deny configuration (if applicable)
-      template:
-        src: cron.deny.j2
-        dest: /etc/cron.deny
-        owner: root
-        group: root
-        mode: 0600
-      notify: restart crond
+    - name: Executing tasks via cronie task list (user)
+      import_tasks: cronie_user.yml
       when:
-        - cronie_deny is defined
-        - cronie_deny|length > 0
+        - cronie_user is defined
+        - cronie_user|length > 0
 
-    - name: Applying cronie environment variables
-      cron:
-        cron_file: "{{ item.0.cron_file }}"
-        env: yes
-        insertafter: "{{ item.1.insertafter|default(omit) }}"
-        insertbefore: "{{ item.1.insertbefore|default(omit) }}"
-        name: "{{ item.1.name|upper }}"
-        value: "{{ item.1.value }}"
-        user: "{{ item.1.user|default('root') }}"
-      notify: restart crond
-      with_subelements:
-        - "{{ cronie_environment }}"
-        - environment
-      when:
-        - item.0.cron_file is defined
-        - item.1.name is defined
-        - item.1.value is defined
-
-    - name: Applying cronie job configurations
-      cron:
-        cron_file: "{{ item.0.cron_file }}"
-        day: "{{ item.1.day|default(omit) }}"
-        disabled: "{{ item.1.disabled|default(omit) }}"
-        env: no
-        hour: "{{ item.1.hour|default(omit) }}"
-        job: "{{ item.1.job }}"
-        minute: "{{ item.1.minute|default(omit) }}"
-        month: "{{ item.1.month|default(omit) }}"
-        name: "{{ item.1.name }}"
-        special_time: "{{ item.1.special_time|default(omit) }}"
-        state: "{{ item.1.state|default(omit) }}"
-        user: "{{ item.1.user|default('root') }}"
-        weekday: "{{ item.1.weekday|default(omit) }}"
-      notify: restart crond
-      with_subelements:
-        - "{{ cronie_jobs }}"
-        - jobs
-      when:
-        - item.0.cron_file is defined
-        - item.1.name is defined
-        - item.1.job is defined
-
-    - name: Applying permissions to cronie job files
-      file:
-        path: "/etc/cron.d/{{ item.cron_file }}"
-        owner: "{{ item.owner|default('root') }}"
-        group: "{{ item.group|default('root') }}"
-        mode: "{{ item.mode|default(0644) }}"
-      with_items: "{{ cronie_jobs }}"
-      when: item.cron_file is defined
-
-    - name: Enable and start the crond service
+    - name: Enable and start the crond service on boot
       service:
         enabled: yes
         name: crond

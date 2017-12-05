@@ -1,0 +1,41 @@
+---
+- name: Applying user owned cronjob environment variables
+  cron:
+    env: yes
+    insertafter: "{{ item.1.insertafter|default(omit) }}"
+    insertbefore: "{{ item.1.insertbefore|default(omit) }}"
+    name: "{{ item.1.name|upper }}"
+    user: "{{ item.0.user }}"
+    value: "{{ item.1.value }}"
+  notify: restart crond
+  with_subelements:
+    - "{{ cronie_user }}"
+    - environment
+  when:
+    - item.0.user is defined
+    - item.1.name is defined
+    - item.1.value is defined
+
+- name: Applying user owned cronjob commands
+  cron:
+    day: "{{ item.1.day|default(omit) }}"
+    disabled: "{{ item.1.disabled|default(omit) }}"
+    env: no
+    hour: "{{ item.1.hour|default(omit) }}"
+    job: "{{ item.1.job }}"
+    minute: "{{ item.1.minute|default(omit) }}"
+    month: "{{ item.1.month|default(omit) }}"
+    name: "{{ item.1.name }}"
+    special_time: "{{ item.1.special_time|default(omit) }}"
+    state: "{{ item.1.state|default(omit) }}"
+    user: "{{ item.0.user }}"
+    weekday: "{{ item.1.weekday|default(omit) }}"
+  notify: restart crond
+  with_subelements:
+    - "{{ cronie_user }}"
+    - commands
+  when:
+    - item.0.user is defined
+    - item.1.job is defined
+    - item.1.name is defined
+...

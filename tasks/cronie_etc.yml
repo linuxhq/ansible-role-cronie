@@ -1,0 +1,37 @@
+---
+- name: Applying cronie hourly and sysconfig configurations
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  notify: restart crond
+  with_items:
+    - { src: 0hourly.j2, dst: /etc/cron.d/0hourly, mode: '0644' }
+    - { src: crond.sysconfig.j2, dst: /etc/sysconfig/crond, mode: '0600' }
+
+- name: Applying cron.allow configuration (if applicable)
+  template:
+    src: cron.allow.j2
+    dest: /etc/cron.allow
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart crond
+  when:
+    - cronie_allow is defined
+    - cronie_allow|length > 0
+
+- name: Applying cron.deny configuration (if applicable)
+  template:
+    src: cron.deny.j2
+    dest: /etc/cron.deny
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart crond
+  when:
+    - cronie_deny is defined
+    - cronie_deny|length > 0
+...
