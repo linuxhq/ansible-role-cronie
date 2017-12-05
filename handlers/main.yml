@@ -1,6 +1,7 @@
 ---
 - name: restart crond
   tags: cronie
+  become: true
   service:
     name: crond
     state: restarted
