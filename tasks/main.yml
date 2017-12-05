@@ -8,16 +8,16 @@
   register: cronie_yum
 
 - block:
-    - name: Executing tasks via cronie task list (etc)
+    - name: Executing etc cronie task list
       import_tasks: cronie_etc.yml
 
-    - name: Executing tasks via cronie task list (system)
+    - name: Executing system cronie task list (if applicable)
       import_tasks: cronie_system.yml
       when:
         - cronie_system is defined
         - cronie_system|length > 0
 
-    - name: Executing tasks via cronie task list (user)
+    - name: Executing user cronie task list (if applicable)
       import_tasks: cronie_user.yml
       when:
         - cronie_user is defined
