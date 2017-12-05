@@ -28,7 +28,9 @@
         group: root
         mode: 0600
       notify: restart crond
-      when: cronie_allow is defined
+      when:
+        - cronie_allow is defined
+        - cronie_allow|length > 0
 
     - name: Applying cron.deny configuration (if applicable)
       template:
@@ -38,7 +40,9 @@
         group: root
         mode: 0600
       notify: restart crond
-      when: cronie_deny is defined
+      when:
+        - cronie_deny is defined
+        - cronie_deny|length > 0
 
     - name: Applying cronie job configurations
       cron:

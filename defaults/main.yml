@@ -1,6 +1,7 @@
 ---
 cronie_allow: []
 cronie_deny: []
+cronie_hourly_home: /
 cronie_hourly_mailto: root
 cronie_hourly_path:
   - /sbin

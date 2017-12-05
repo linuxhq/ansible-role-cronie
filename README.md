@@ -14,6 +14,7 @@ Available variables are listed below, along with default values:
 
     cronie_allow: []
     cronie_deny: []
+    cronie_hourly_home: /
     cronie_hourly_mailto: root
     cronie_hourly_path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]
       - /sbin
