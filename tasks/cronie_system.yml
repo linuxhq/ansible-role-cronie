@@ -1,5 +1,5 @@
 ---
-- name: Applying system cronjob environment variables
+- name: Attempting to overlay system cronjob environment variables, if applicable
   cron:
     cron_file: "{{ item.0.cron_file }}"
     env: yes
@@ -13,11 +13,12 @@
     - "{{ cronie_system }}"
     - environment
   when:
+    - cronie_system|length > 0
     - item.0.cron_file is defined
     - item.1.name is defined
     - item.1.value is defined
 
-- name: Applying system cronjob commands
+- name: Attempting to overlay system cronjob commands, if applicable
   cron:
     cron_file: "{{ item.0.cron_file }}"
     day: "{{ item.1.day|default(omit) }}"
@@ -37,16 +38,19 @@
     - "{{ cronie_system }}"
     - commands
   when:
+    - cronie_system|length > 0
     - item.0.cron_file is defined
     - item.1.job is defined
     - item.1.name is defined
 
-- name: Applying permissions to system crontab files
+- name: Attempting to apply permissions on system crontab files
   file:
     path: "/etc/cron.d/{{ item.cron_file }}"
     owner: "{{ item.owner|default('root') }}"
     group: "{{ item.group|default('root') }}"
     mode: "{{ item.mode|default(0644) }}"
   with_items: "{{ cronie_system }}"
-  when: item.cron_file is defined
+  when:
+    - cronie_system|length > 0
+    - item.cron_file is defined
 ...

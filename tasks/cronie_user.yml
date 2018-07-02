@@ -1,5 +1,5 @@
 ---
-- name: Applying user owned cronjob environment variables
+- name: Attempting to overlay user cronjob environment variables, if applicable
   cron:
     env: yes
     insertafter: "{{ item.1.insertafter|default(omit) }}"
@@ -12,11 +12,12 @@
     - "{{ cronie_user }}"
     - environment
   when:
+    - cronie_user|length > 0
     - item.0.user is defined
     - item.1.name is defined
     - item.1.value is defined
 
-- name: Applying user owned cronjob commands
+- name: Attempting to overlay user cronjob commands, if applicable
   cron:
     day: "{{ item.1.day|default(omit) }}"
     disabled: "{{ item.1.disabled|default(omit) }}"
@@ -35,6 +36,7 @@
     - "{{ cronie_user }}"
     - commands
   when:
+    - cronie_user|length > 0
     - item.0.user is defined
     - item.1.job is defined
     - item.1.name is defined

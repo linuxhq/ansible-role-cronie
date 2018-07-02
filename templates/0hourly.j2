@@ -1,4 +1,4 @@
-# Run the hourly jobs
+# {{ ansible_managed }}
 SHELL={{ cronie_hourly_shell }}
 PATH={{ cronie_hourly_path|join(':') }}
 MAILTO={{ cronie_hourly_mailto }}

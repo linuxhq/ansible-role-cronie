@@ -1,3 +1,2 @@
-# Settings for the CRON daemon.
-# CRONDARGS= :  any extra command-line startup arguments for crond
-CRONDARGS={{ cronie_sysconfig_args }}
+# {{ ansible_managed }}
+CRONDARGS="{{ cronie_sysconfig_args }}"

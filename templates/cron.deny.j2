@@ -1,3 +1,8 @@
-{% for deny in cronie_deny|sort %}
+# {{ ansible_managed }}
+# cronie_deny: {{ cronie_deny|length }}
+{% if cronie_deny|length > 0 %}
+
+{%   for deny in cronie_deny|sort %}
 {{ deny }}
-{% endfor %}
+{%   endfor %}
+{% endif %}

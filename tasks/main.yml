@@ -7,28 +7,21 @@
     state: present
   register: cronie_yum
 
-- block:
-    - name: Executing etc cronie task list
-      import_tasks: cronie_etc.yml
-
-    - name: Executing system cronie task list (if applicable)
-      import_tasks: cronie_system.yml
-      when:
-        - cronie_system is defined
-        - cronie_system|length > 0
-
-    - name: Executing user cronie task list (if applicable)
-      import_tasks: cronie_user.yml
-      when:
-        - cronie_user is defined
-        - cronie_user|length > 0
-
-    - name: Enable and start the crond service on boot
-      service:
-        enabled: yes
-        name: crond
-        state: started
+- name: Attempting to import cronie related tasks
   tags: cronie
   become: true
-  when: cronie_yum|success
+  block:
+    - import_tasks: cronie_etc.yml
+    - import_tasks: cronie_system.yml
+    - import_tasks: cronie_user.yml
+  when: cronie_yum is success
+
+- name: Enable and start the crond service on boot
+  tags: cronie
+  become: true
+  service:
+    enabled: yes
+    name: crond
+    state: started
+  when: cronie_yum is success
 ...

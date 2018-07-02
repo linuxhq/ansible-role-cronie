@@ -1,3 +1,8 @@
-{% for allow in cronie_allow|sort %}
+# {{ ansible_managed }}
+# cronie_allow: {{ cronie_allow|length }}
+{% if cronie_allow|length > 0 %}
+
+{%   for allow in cronie_allow|sort %}
 {{ allow }}
-{% endfor %}
+{%   endfor %}
+{% endif %}

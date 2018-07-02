@@ -4,7 +4,7 @@ galaxy_info:
   author: tkimball83
   description: RHEL/CentOS - UNIX daemon crond (cronie)
   license: GPLv3
-  min_ansible_version: 2.4
+  min_ansible_version: 2.5
   platforms:
     - name: EL
       versions:
@@ -13,5 +13,4 @@ galaxy_info:
   galaxy_tags:
     - cronie
     - crontab
-    - system
 ...
