@@ -1,6 +1,7 @@
 ---
 dependencies: []
 galaxy_info:
+  role_name: cronie
   author: tkimball83
   description: RHEL/CentOS - UNIX daemon crond (cronie)
   license: GPLv3
