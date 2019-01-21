@@ -7,6 +7,8 @@
     state: present
 
 - name: Attempting to overlay cronie configurations
+  tags: cronie
+  become: true
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dst }}"
@@ -23,6 +25,8 @@
     label: "{{ item.dst|basename }}"
 
 - name: Attempting to overlay system cronjob environment variables, if applicable
+  tags: cronie
+  become: true
   cron:
     cron_file: "{{ item.0.cron_file }}"
     env: yes
@@ -42,6 +46,8 @@
     - item.1.value is defined
 
 - name: Attempting to overlay system cronjob commands, if applicable
+  tags: cronie
+  become: true
   cron:
     cron_file: "{{ item.0.cron_file }}"
     day: "{{ item.1.day|default(omit) }}"
@@ -67,6 +73,8 @@
     - item.1.name is defined
 
 - name: Attempting to apply permissions on system crontab files
+  tags: cronie
+  become: true
   file:
     path: "{{ '/etc/cron.d/' + item.cron_file }}"
     owner: "{{ item.owner|default('root') }}"
@@ -80,6 +88,8 @@
     - item.cron_file is defined
 
 - name: Attempting to overlay user cronjob environment variables, if applicable
+  tags: cronie
+  become: true
   cron:
     env: yes
     insertafter: "{{ item.1.insertafter|default(omit) }}"
@@ -98,6 +108,8 @@
     - item.1.value is defined
 
 - name: Attempting to overlay user cronjob commands, if applicable
+  tags: cronie
+  become: true
   cron:
     day: "{{ item.1.day|default(omit) }}"
     disabled: "{{ item.1.disabled|default(omit) }}"
